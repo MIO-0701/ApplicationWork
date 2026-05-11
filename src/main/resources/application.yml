@@ -1,0 +1,12 @@
+#spring:
+#  profiles:
+#    active: @profile.name@
+spring:
+  application:
+    name: android_work
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/android_work_db?characterEncoding=utf8&useSSL=false
+    username: root
+    password: Aa@1446180775
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
