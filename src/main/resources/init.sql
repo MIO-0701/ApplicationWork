@@ -42,7 +42,7 @@
 create database android_work_db;
 use android_work_db;
 
-CREATE TABLE `mang_ren_db` (
+CREATE TABLE `mang_ren` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `zhang_hao` varchar(255) DEFAULT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `mang_ren_db` (
   `updata_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
-CREATE TABLE `zhi_yuan_db` (
+CREATE TABLE `zhi_yuan` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `zhang_hao` varchar(255) DEFAULT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `zhi_yuan_db` (
   `updata_time` datetime DEFAULT NULL,
     PRIMARY KEY (`id`)
 );
-CREATE TABLE `yu_yue_db` (
+CREATE TABLE `yu_yue` (
   `id` int NOT NULL AUTO_INCREMENT,
   `mang_ren_id` int DEFAULT NULL,
   `zhi_yuan_id` int DEFAULT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE `yu_yue_db` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
-CREATE TABLE `run_db` (
+CREATE TABLE `run` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_type` int DEFAULT NULL,
   `user_id` int DEFAULT NULL,

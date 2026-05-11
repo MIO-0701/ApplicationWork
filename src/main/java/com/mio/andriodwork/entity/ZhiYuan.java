@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ZhiYuanZhe {
+public class ZhiYuan {
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
     private String name;
