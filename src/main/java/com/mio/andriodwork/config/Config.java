@@ -12,4 +12,5 @@ public class Config {
     public final static long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;//7天
     public final static int NO_DELETE = 0;
     public final static int DELETED = 1;
+    public final static String TOKEN_NAME="token";
 }

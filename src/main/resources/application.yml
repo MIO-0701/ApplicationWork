@@ -5,8 +5,8 @@ spring:
   application:
     name: android_work
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/android_work_db?characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/android_work_db?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: Aa@1446180775
+    password: 1446180775
     driver-class-name: com.mysql.cj.jdbc.Driver
 

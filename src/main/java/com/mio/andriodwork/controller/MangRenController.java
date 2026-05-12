@@ -9,6 +9,7 @@ import com.mio.andriodwork.entity.response.LoginResponse;
 import com.mio.andriodwork.entity.response.MangRenResponse;
 import com.mio.andriodwork.entity.response.YuYueResponse;
 import com.mio.andriodwork.server.MangRenServer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("mangRen")
+@Slf4j
 public class MangRenController {
     @Autowired
     MangRenServer mangRenServer;
