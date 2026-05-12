@@ -58,9 +58,12 @@ public class MangRenServer {
             return false;
         }
         log.info("用户注册：{}",request);
-        mangRenMapper.selectList(new LambdaQueryWrapper<>(MangRen.class)
-                .eq(MangRen::getZhangHao,request.getZhangHao())
-                .eq(MangRen::getIsDel,Config.NO_DELETE));
+        List<MangRen> mangRens = mangRenMapper.selectList(new LambdaQueryWrapper<>(MangRen.class)
+                .eq(MangRen::getZhangHao, request.getZhangHao())
+                .eq(MangRen::getIsDel, Config.NO_DELETE));
+        if(mangRens.size()>0){
+            return false;
+        }
         request.setIsDel(Config.NO_DELETE);
 //        request.setId(null);
         int insert = mangRenMapper.insert(request);
