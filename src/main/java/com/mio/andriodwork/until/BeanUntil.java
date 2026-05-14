@@ -2,10 +2,12 @@ package com.mio.andriodwork.until;
 
 import com.mio.andriodwork.entity.MangRen;
 import com.mio.andriodwork.entity.YuYue;
+import com.mio.andriodwork.entity.ZhiYuan;
 import com.mio.andriodwork.entity.request.MangRenUpdataRequest;
 import com.mio.andriodwork.entity.request.YuYueRequest;
 import com.mio.andriodwork.entity.response.MangRenResponse;
 import com.mio.andriodwork.entity.response.YuYueResponse;
+import com.mio.andriodwork.entity.response.ZhiYuanResponse;
 import org.springframework.beans.BeanUtils;
 
 import java.util.HashMap;
@@ -43,5 +45,17 @@ public class BeanUntil {
         yuYueResponse.setDiDian(yuYue.getDiDian());
         yuYueResponse.setCreateTime(yuYue.getCreateTime());
         return yuYueResponse;
+    }
+
+    public static ZhiYuanResponse getZhiYuanResponse(ZhiYuan zhiYuan) {
+        ZhiYuanResponse zhiYuanResponse = new ZhiYuanResponse();
+        BeanUtils.copyProperties(zhiYuan,zhiYuanResponse);
+        return zhiYuanResponse;
+    }
+
+    public static Map<String,Object> getZhiYuanMap(ZhiYuan zhiYuan){
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",zhiYuan.getId());
+        return map;
     }
 }

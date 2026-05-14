@@ -20,7 +20,7 @@ public class ZhiYuan {
     private Integer sex;
     private Integer suDu;
     private Integer gongLi;
-    private String zaiXian;
+    private String zaiXian;//平时在线时间XXDD  XX-DD
     private Integer pingFen;
     private Integer isRenZhen;
     private Integer isDel;
