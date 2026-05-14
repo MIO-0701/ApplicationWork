@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -22,6 +24,6 @@ public class ZhiYuan {
     private Integer pingFen;
     private Integer isRenZhen;
     private Integer isDel;
-    private String createTime;
-    private String updataTime;
+    private Date createTime;
+    private Date updataTime;
 }

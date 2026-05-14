@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -16,5 +18,5 @@ public class YuYue {
     private int zhiYuanId;
     private String diDian;
     private int isDel;
-    private String createTime;
+    private Date createTime;
 }

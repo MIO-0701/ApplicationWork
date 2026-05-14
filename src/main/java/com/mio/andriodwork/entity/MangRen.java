@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +21,6 @@ public class MangRen {
     private Integer suDu;
     private Integer gongLi;
     private Integer isDel;
-    private String createTime;
-    private String updataTime;
+    private Date createTime;
+    private Date updataTime;
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mio.andriodwork.config.Config;
 import com.mio.andriodwork.entity.LoginException;
 import com.mio.andriodwork.entity.MangRen;
+import com.mio.andriodwork.entity.YuYue;
 import com.mio.andriodwork.entity.request.LoginRequest;
 import com.mio.andriodwork.entity.request.MangRenUpdataRequest;
 import com.mio.andriodwork.entity.request.PasswordUpdata;
@@ -12,12 +13,14 @@ import com.mio.andriodwork.entity.response.LoginResponse;
 import com.mio.andriodwork.entity.response.MangRenResponse;
 import com.mio.andriodwork.entity.response.YuYueResponse;
 import com.mio.andriodwork.mapper.MangRenMapper;
+import com.mio.andriodwork.mapper.YuYueMapper;
 import com.mio.andriodwork.until.BeanUntil;
 import com.mio.andriodwork.until.JwtUntil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,6 +28,8 @@ import java.util.List;
 public class MangRenServer {
     @Autowired
     MangRenMapper mangRenMapper;
+    @Autowired
+    YuYueMapper yuYueMapper;
 
     public MangRenResponse getMangRenById(int id) {// 通过盲人id获取盲人信息
         log.info("通过id获取用户信息：{}",id);
@@ -105,14 +110,49 @@ public class MangRenServer {
     }
 
     public int createYuYue(YuYueRequest request) {// 创建预约
-        return 1;
+        if(request== null){
+            return -1;
+        }
+        log.info("创建预约：{}",request);
+        YuYue yuYue = BeanUntil.getYuYue(request);
+        yuYue.setIsDel(Config.NO_DELETE);
+        yuYue.setMangRenId(request.getId());
+        int insert = yuYueMapper.insert(yuYue);
+        if(insert<1){
+            return -1;
+        }
+        return insert;
     }
 
-    public List<YuYueResponse> getYuYue(int id) {// 通过用户id获取预约
-        return null;
+    public List<YuYueResponse> getYuYue(Integer id) {// 通过用户id获取预约
+        if(id==null){
+            return null;
+        }
+        log.info("通过用户id获取预约：{}",id);
+        List<YuYue> yuYues = yuYueMapper.selectList(new LambdaQueryWrapper<>(YuYue.class)
+                .eq(YuYue::getMangRenId, id)
+                .eq(YuYue::getIsDel, Config.NO_DELETE));
+        if(yuYues== null){
+            return null;
+        }
+        List<YuYueResponse> yuYueResponses = new ArrayList<>();
+        for (YuYue yuYue : yuYues){
+            yuYueResponses.add(BeanUntil.getYuYueResponse(yuYue));
+        }
+        return yuYueResponses;
     }
 
     public Boolean delYuYue(int yuYueId) {// 删除预约
-        return null;
+        log.info("删除预约：{}",yuYueId);
+        YuYue yuYue = yuYueMapper.selectOne(new LambdaQueryWrapper<>(YuYue.class).eq(YuYue::getId, yuYueId).eq(YuYue::getIsDel, Config.NO_DELETE));
+        if(yuYue== null){
+            return false;
+        }
+        yuYue.setIsDel(Config.DELETED);
+        int update = yuYueMapper.update(yuYue, new LambdaQueryWrapper<>(YuYue.class).eq(YuYue::getId, yuYueId));
+        if(update>0){
+            return true;
+        }
+        return false;
     }
 }

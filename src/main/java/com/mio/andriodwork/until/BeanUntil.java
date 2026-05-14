@@ -1,8 +1,11 @@
 package com.mio.andriodwork.until;
 
 import com.mio.andriodwork.entity.MangRen;
+import com.mio.andriodwork.entity.YuYue;
 import com.mio.andriodwork.entity.request.MangRenUpdataRequest;
+import com.mio.andriodwork.entity.request.YuYueRequest;
 import com.mio.andriodwork.entity.response.MangRenResponse;
+import com.mio.andriodwork.entity.response.YuYueResponse;
 import org.springframework.beans.BeanUtils;
 
 import java.util.HashMap;
@@ -25,5 +28,20 @@ public class BeanUntil {
         MangRen mangRen = new MangRen();
         BeanUtils.copyProperties(mangRenRequest,mangRen);
         return mangRen;
+    }
+
+    public static YuYue getYuYue(YuYueRequest yuYueRequest){
+        YuYue yuYue = new YuYue();
+        BeanUtils.copyProperties(yuYueRequest,yuYue);
+        return yuYue;
+    }
+
+    public static YuYueResponse getYuYueResponse(YuYue yuYue) {
+        YuYueResponse yuYueResponse = new YuYueResponse();
+        yuYueResponse.setYuYueID(yuYue.getId());
+        yuYueResponse.setZhiYuanId(yuYue.getZhiYuanId());
+        yuYueResponse.setDiDian(yuYue.getDiDian());
+        yuYueResponse.setCreateTime(yuYue.getCreateTime());
+        return yuYueResponse;
     }
 }
