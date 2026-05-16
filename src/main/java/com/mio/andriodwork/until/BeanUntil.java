@@ -5,6 +5,7 @@ import com.mio.andriodwork.entity.YuYue;
 import com.mio.andriodwork.entity.ZhiYuan;
 import com.mio.andriodwork.entity.request.MangRenUpdataRequest;
 import com.mio.andriodwork.entity.request.YuYueRequest;
+import com.mio.andriodwork.entity.request.ZhiYuanZhuCeRequest;
 import com.mio.andriodwork.entity.response.MangRenResponse;
 import com.mio.andriodwork.entity.response.YuYueResponse;
 import com.mio.andriodwork.entity.response.ZhiYuanResponse;
@@ -42,6 +43,7 @@ public class BeanUntil {
         YuYueResponse yuYueResponse = new YuYueResponse();
         yuYueResponse.setYuYueID(yuYue.getId());
         yuYueResponse.setZhiYuanId(yuYue.getZhiYuanId());
+        yuYueResponse.setMangRenId(yuYue.getMangRenId());
         yuYueResponse.setDiDian(yuYue.getDiDian());
         yuYueResponse.setCreateTime(yuYue.getCreateTime());
         return yuYueResponse;
@@ -57,5 +59,11 @@ public class BeanUntil {
         Map<String,Object> map = new HashMap<>();
         map.put("id",zhiYuan.getId());
         return map;
+    }
+
+    public static ZhiYuan getZhiYuan(ZhiYuanZhuCeRequest zhiYuan) {
+        ZhiYuan zhiYuan1 = new ZhiYuan();
+        BeanUtils.copyProperties(zhiYuan,zhiYuan1);
+        return zhiYuan1;
     }
 }

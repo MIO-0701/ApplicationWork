@@ -50,13 +50,14 @@ public class ZhiYuanZheController {
         return zhiYuanZheServer.getYuYue(id);
     }
 
+    @RequestMapping("getAllYuYue")
+    public List<YuYueResponse> getAllYuYue(){
+        return zhiYuanZheServer.getAllYuYue();
+    }
+
     @RequestMapping("delYuYue")
     public Boolean delYuYue(@NonNull Integer yuYueId){
         return zhiYuanZheServer.delYuYue(yuYueId);
     }
 
-    @RequestMapping("YuYue")
-    public Boolean YuYue(@RequestBody YuYueXuanZeRequest yuYue){
-        return zhiYuanZheServer.YuYue(yuYue);
-    }
 }
