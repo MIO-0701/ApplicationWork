@@ -13,4 +13,6 @@ public class Config {
     public final static int NO_DELETE = 0;
     public final static int DELETED = 1;
     public final static String TOKEN_NAME="token";
+    public final static int MR_TYPE=0;
+    public final static int ZY_TYPE=1;
 }

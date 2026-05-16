@@ -5,7 +5,7 @@ import com.mio.andriodwork.entity.request.*;
 import com.mio.andriodwork.entity.response.LoginResponse;
 import com.mio.andriodwork.entity.response.YuYueResponse;
 import com.mio.andriodwork.entity.response.ZhiYuanResponse;
-import com.mio.andriodwork.server.ZhiYuanZheServer;
+import com.mio.andriodwork.service.ZhiYuanZheService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,46 +18,50 @@ import java.util.List;
 @RequestMapping("zhiYuan")
 public class ZhiYuanZheController {
     @Autowired
-    ZhiYuanZheServer zhiYuanZheServer;
+    ZhiYuanZheService zhiYuanZheService;
 
     @RequestMapping("getZhiYuan")
     public ZhiYuanResponse getZhiYuanById(@NonNull Integer id){
-        return zhiYuanZheServer.getZhiYuanById(id);
+        return zhiYuanZheService.getZhiYuanById(id);
     }
 
     @RequestMapping("login")
     public LoginResponse login(@RequestBody LoginRequest zhiYuan){
-        return zhiYuanZheServer.login(zhiYuan);
+        return zhiYuanZheService.login(zhiYuan);
     }
 
     @RequestMapping("zhuCe")
     public Boolean zhuCe(@RequestBody ZhiYuanZhuCeRequest zhiYuan){
-        return zhiYuanZheServer.zhuCe(zhiYuan);
+        return zhiYuanZheService.zhuCe(zhiYuan);
     }
 
     @RequestMapping("updataZhiYuan")
     public Boolean updataZhiYuan(@RequestBody ZhiYuan zhiYuan){
-        return zhiYuanZheServer.updataZhiYuan(zhiYuan);
+        return zhiYuanZheService.updataZhiYuan(zhiYuan);
     }
 
     @RequestMapping("updataPassword")
     public Boolean updataPassword(@RequestBody PasswordUpdata request){
-        return zhiYuanZheServer.updataPassword(request);
+        return zhiYuanZheService.updataPassword(request);
     }
 
     @RequestMapping("getYuYue")
     public List<YuYueResponse> getYuYue(@NonNull Integer id){
-        return zhiYuanZheServer.getYuYue(id);
+        return zhiYuanZheService.getYuYue(id);
     }
 
     @RequestMapping("getAllYuYue")
     public List<YuYueResponse> getAllYuYue(){
-        return zhiYuanZheServer.getAllYuYue();
+        return zhiYuanZheService.getAllYuYue();
     }
 
     @RequestMapping("delYuYue")
     public Boolean delYuYue(@NonNull Integer yuYueId){
-        return zhiYuanZheServer.delYuYue(yuYueId);
+        return zhiYuanZheService.delYuYue(yuYueId);
     }
 
+    @RequestMapping("YuYue")
+    public Boolean YuYue(@RequestBody YuYueXuanZeRequest yuYue){ //选择预约
+        return zhiYuanZheService.YuYue(yuYue);
+    }
 }

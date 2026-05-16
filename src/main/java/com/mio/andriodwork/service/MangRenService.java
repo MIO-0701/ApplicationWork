@@ -1,4 +1,4 @@
-package com.mio.andriodwork.server;
+package com.mio.andriodwork.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mio.andriodwork.config.Config;
@@ -25,7 +25,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class MangRenServer {
+public class MangRenService {
     @Autowired
     MangRenMapper mangRenMapper;
     @Autowired
@@ -132,7 +132,7 @@ public class MangRenServer {
         List<YuYue> yuYues = yuYueMapper.selectList(new LambdaQueryWrapper<>(YuYue.class)
                 .eq(YuYue::getMangRenId, id)
                 .eq(YuYue::getIsDel, Config.NO_DELETE));
-        if(yuYues== null){
+        if(yuYues== null||yuYues.size()<1){
             return null;
         }
         List<YuYueResponse> yuYueResponses = new ArrayList<>();
