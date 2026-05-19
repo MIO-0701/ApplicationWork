@@ -11,6 +11,8 @@ import com.mio.andriodwork.entity.response.YuYueResponse;
 import com.mio.andriodwork.entity.response.ZhiYuanResponse;
 import org.springframework.beans.BeanUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +38,14 @@ public class BeanUntil {
     public static YuYue getYuYue(YuYueRequest yuYueRequest){
         YuYue yuYue = new YuYue();
         BeanUtils.copyProperties(yuYueRequest,yuYue);
+        yuYue.setId(0);
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date createTime = sdf.parse(yuYueRequest.getCreateTime());
+            yuYue.setCreateTime(createTime);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return yuYue;
     }
 

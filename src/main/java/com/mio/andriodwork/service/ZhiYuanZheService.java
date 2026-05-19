@@ -96,6 +96,7 @@ public class ZhiYuanZheService {
         ZhiYuan zhiYuan = new ZhiYuan();
         zhiYuan.setPassword(request.getPassword());
         int update = zhiYuanZheMapper.update(zhiYuan, new LambdaQueryWrapper<>(ZhiYuan.class).eq(ZhiYuan::getId, request.getId()).eq(ZhiYuan::getIsDel, Config.NO_DELETE));
+
         if (update>0){
             return true;
         }

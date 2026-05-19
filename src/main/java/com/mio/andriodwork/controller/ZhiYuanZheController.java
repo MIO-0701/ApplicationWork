@@ -20,7 +20,7 @@ public class ZhiYuanZheController {
     @Autowired
     ZhiYuanZheService zhiYuanZheService;
 
-    @RequestMapping("getZhiYuan")
+    @RequestMapping("getuser")
     public ZhiYuanResponse getZhiYuanById(@NonNull Integer id){
         return zhiYuanZheService.getZhiYuanById(id);
     }
