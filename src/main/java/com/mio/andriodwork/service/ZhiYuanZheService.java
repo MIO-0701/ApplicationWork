@@ -133,25 +133,28 @@ public class ZhiYuanZheService {
     public List<YuYueResponse> getAllYuYue() {
         log.info("获取所有预约");
         List<YuYue> yuYues = yuYueMapper.selectList(new LambdaQueryWrapper<>(YuYue.class).eq(YuYue::getIsDel, Config.NO_DELETE));
-        if(yuYues!=null||yuYues.size()<1){
+
+        if(yuYues==null||yuYues.size()<1){
             return null;
         }
         List<YuYueResponse> yuYueResponses = new ArrayList<>();
         for (YuYue yuYue : yuYues){
             yuYueResponses.add(BeanUntil.getYuYueResponse(yuYue));
         }
+
         return yuYueResponses;
     }
 
 
     public Boolean YuYue(YuYueXuanZeRequest yuYue) {
         log.info("选择预约：{}",yuYue);
-        YuYue yuYue1 = yuYueMapper.selectOne(new LambdaQueryWrapper<>(YuYue.class).eq(YuYue::getZhiYuanId, yuYue.getYuYueId()).eq(YuYue::getIsDel, Config.NO_DELETE));
-        if(yuYue1.getId()!=-1){
+        YuYue yuYue1 = yuYueMapper.selectOne(new LambdaQueryWrapper<>(YuYue.class).eq(YuYue::getId, yuYue.getYuYueId()).eq(YuYue::getIsDel, Config.NO_DELETE));
+
+        if(yuYue1.getId()==-1){
             return false;
         }
-        yuYue1.setZhiYuanId(yuYue.getYuYueId());
-        int update = yuYueMapper.update(yuYue1, new LambdaQueryWrapper<>(YuYue.class).eq(YuYue::getId, yuYue.getId()));
+        yuYue1.setZhiYuanId(yuYue.getId());
+        int update = yuYueMapper.updateById(yuYue1);
         if(update>0){
             return true;
         }

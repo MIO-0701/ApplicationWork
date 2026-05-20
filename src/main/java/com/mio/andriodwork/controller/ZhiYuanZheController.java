@@ -60,7 +60,7 @@ public class ZhiYuanZheController {
         return zhiYuanZheService.delYuYue(yuYueId);
     }
 
-    @RequestMapping("YuYue")
+    @RequestMapping("yuYue")
     public Boolean YuYue(@RequestBody YuYueXuanZeRequest yuYue){ //选择预约
         return zhiYuanZheService.YuYue(yuYue);
     }
