@@ -63,7 +63,7 @@ class EditProfileViewModel : ViewModel() {
                             sex = info.sex,
                             suDu = info.suDu.toString(),
                             gongLi = info.gongLi.toString(),
-                            renZhen = info.renZhen
+                            renZhen = info.renZhen ?: ""
                         )
                     },
                     onFailure = { e ->
@@ -102,6 +102,7 @@ class EditProfileViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isSaving = true, errorMessage = null)
             val result = repository.updateUser(
+                userType = state.userType,
                 userId = userId,
                 name = state.name,
                 sex = state.sex,

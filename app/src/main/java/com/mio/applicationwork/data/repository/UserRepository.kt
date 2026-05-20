@@ -143,16 +143,23 @@ class UserRepository {
         }
     }
 
-    suspend fun updatePassword(password: String): Result<Boolean> {
-        Log.i(TAG, "修改密码")
+    suspend fun updatePassword(userType: Int, userId: Int, password: String): Result<Boolean> {
+        val typeName = if (userType == USER_TYPE_MANGREN) "盲人" else "志愿者"
+        Log.i(TAG, "修改密码 —— 用户类型: $typeName, userId=$userId")
         return try {
-            val response = api.mangRenUpdatePassword(mapOf("password" to password))
-            if (response.isSuccessful && response.body()?.code == 200) {
-                Log.i(TAG, "✅ 修改密码成功")
-                Result.success(response.body()!!.data ?: false)
+            val body = PasswordUpdateRequest(userId, password)
+            val response = if (userType == USER_TYPE_MANGREN) {
+                api.mangRenUpdatePassword(body)
             } else {
-                Log.e(TAG, "❌ 修改密码失败 —— ${response.body()?.message}")
-                Result.failure(Exception(response.body()?.message ?: "修改密码失败"))
+                api.zhiYuanUpdatePassword(body)
+            }
+            if (response.isSuccessful && response.body()?.code == 200 && response.body()?.data == true) {
+                Log.i(TAG, "✅ 修改密码成功")
+                Result.success(true)
+            } else {
+                val errMsg = response.body()?.message ?: "修改密码失败"
+                Log.e(TAG, "❌ 修改密码失败 —— code=${response.body()?.code}, data=${response.body()?.data}, message=$errMsg")
+                Result.failure(Exception(errMsg))
             }
         } catch (e: Exception) {
             Log.e(TAG, "❌ 修改密码异常: ${e.message}", e)
@@ -160,24 +167,50 @@ class UserRepository {
         }
     }
 
-    /** 修改用户信息（盲人/志愿者共用 /mangRen/updataUser） */
+    /** 修改用户信息 */
     suspend fun updateUser(
-        userId: Int, name: String, sex: Int, suDu: Double, gongLi: Double, renZhen: String = ""
+        userType: Int, userId: Int, name: String, sex: Int, suDu: Double, gongLi: Double, renZhen: String = ""
     ): Result<Boolean> {
-        Log.i(TAG, "修改用户信息 —— userId=$userId, name=$name, sex=$sex, suDu=$suDu, gongLi=$gongLi, renZhen=$renZhen")
+        val typeName = if (userType == USER_TYPE_MANGREN) "盲人" else "志愿者"
+        Log.i(TAG, "修改用户信息 —— 用户类型: $typeName, userId=$userId, name=$name, sex=$sex, suDu=$suDu, gongLi=$gongLi, renZhen=$renZhen")
         return try {
             val request = UpdateUserRequest(userId, name, sex, suDu, gongLi, renZhen)
-            val response = api.mangRenUpdateUser(request)
-            val body = response.body()
-            if (response.isSuccessful && body?.code == 200) {
-                Log.i(TAG, "✅ 修改用户信息成功")
-                Result.success(body.data ?: false)
+            val response = if (userType == USER_TYPE_MANGREN) {
+                api.mangRenUpdateUser(request)
             } else {
-                Log.e(TAG, "❌ 修改用户信息失败 —— ${body?.message}")
+                api.zhiYuanUpdateUser(request)
+            }
+            val body = response.body()
+            if (response.isSuccessful && response.body()?.code == 200 && response.body()?.data == true) {
+                Log.i(TAG, "✅ 修改用户信息成功")
+                Result.success(true)
+            } else {
+                Log.e(TAG, "❌ 修改用户信息失败 —— code=${body?.code}, data=${body?.data}, message=${body?.message}")
                 Result.failure(Exception(body?.message ?: "修改信息失败"))
             }
         } catch (e: Exception) {
             Log.e(TAG, "❌ 修改用户信息异常: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRunData(userType: Int, userId: Int): Result<List<RunData>> {
+        val typeName = if (userType == USER_TYPE_MANGREN) "盲人" else "志愿者"
+        Log.i(TAG, "获取跑步数据 —— 用户类型: $typeName, userId=$userId")
+        return try {
+            val request = RunDataRequest(userType, userId)
+            val response = api.getRunData(request)
+            val body = response.body()
+            if (response.isSuccessful && body?.code == 200) {
+                val list = body.data ?: emptyList()
+                Log.i(TAG, "✅ 获取跑步数据成功 —— 共 ${list.size} 条")
+                Result.success(list)
+            } else {
+                Log.e(TAG, "❌ 获取跑步数据失败 —— ${body?.message}")
+                Result.failure(Exception(body?.message ?: "获取跑步数据失败"))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ 获取跑步数据异常: ${e.message}", e)
             Result.failure(e)
         }
     }

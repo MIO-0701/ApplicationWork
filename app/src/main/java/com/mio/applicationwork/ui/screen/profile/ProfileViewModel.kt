@@ -70,7 +70,7 @@ class ProfileViewModel : ViewModel() {
                             isLoading = false,
                             id = info.id, name = info.name, sex = info.sex,
                             suDu = info.suDu, gongLi = info.gongLi,
-                            pingFen = info.pingFen, renZhen = info.renZhen,
+                            pingFen = info.pingFen ?: 0.0, renZhen = info.renZhen ?: "",
                             createTime = info.createTime ?: "未知"
                         )
                     },

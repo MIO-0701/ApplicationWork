@@ -71,6 +71,12 @@ data class UpdateUserRequest(
     val renZhen: String = "" // 仅志愿者需要，盲人留空即可
 )
 
+/** 修改密码请求体 */
+data class PasswordUpdateRequest(
+    val id: Int,
+    val password: String
+)
+
 // ============================================================
 // 志愿者用户（zhiYuan）
 // ============================================================
@@ -91,8 +97,8 @@ data class ZhiYuanUserInfo(
     val id: Int,
     val name: String,
     val sex: Int,
-    val pingFen: Double,  // 综合评分，由盲人评价累积
-    val renZhen: String = "", // 志愿者认证号（注册时填写）
+    val pingFen: Double? = null,  // 综合评分，由盲人评价累积（可空防御后端缺失字段）
+    val renZhen: String? = null,  // 志愿者认证号（注册时填写，可空防御后端缺失字段）
     val suDu: Double,
     val gongLi: Double,
     val createTime: String? = null
@@ -125,7 +131,7 @@ data class YuYueItem(
     val zhiYuanId: Int = 0,  // 盲人端返回时有此字段
     val mangRenId: Int = 0,  // 志愿者端返回时有此字段
     val diDian: String,      // 跑步地点
-    val createTime: String,  // 预约时间
+    val createTime: String? = null, // 预约时间（可空，防御后端返回null）
     val suDu: Double,        // 要求的配速
     val gongLi: Double       // 要求的公里数
 )

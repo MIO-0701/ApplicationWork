@@ -14,10 +14,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangePasswordScreen(
+    userType: Int,
+    userId: Int,
     onNavigateBack: () -> Unit,
     viewModel: ChangePasswordViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.setUserType(userType)
+        viewModel.setUserId(userId)
+    }
 
     // 修改成功后返回
     LaunchedEffect(uiState.success) {

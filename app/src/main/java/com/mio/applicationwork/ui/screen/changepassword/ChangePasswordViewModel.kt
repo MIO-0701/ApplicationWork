@@ -12,6 +12,8 @@ data class ChangePasswordUiState(
     val oldPassword: String = "",
     val newPassword: String = "",
     val confirmPassword: String = "",
+    val userType: Int = UserRepository.USER_TYPE_MANGREN,
+    val userId: Int = 0,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val success: Boolean = false
@@ -34,6 +36,14 @@ class ChangePasswordViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(confirmPassword = value, errorMessage = null)
     }
 
+    fun setUserType(userType: Int) {
+        _uiState.value = _uiState.value.copy(userType = userType)
+    }
+
+    fun setUserId(userId: Int) {
+        _uiState.value = _uiState.value.copy(userId = userId)
+    }
+
     fun submit() {
         val state = _uiState.value
 
@@ -49,7 +59,7 @@ class ChangePasswordViewModel : ViewModel() {
         Log.i(TAG, "→ 提交修改密码")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            val result = repository.updatePassword(state.newPassword)
+            val result = repository.updatePassword(state.userType, state.userId, state.newPassword)
             result.fold(
                 onSuccess = {
                     Log.i(TAG, "✅ 修改密码成功")

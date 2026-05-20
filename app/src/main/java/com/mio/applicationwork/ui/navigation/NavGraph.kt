@@ -102,7 +102,7 @@ fun NavGraph(navController: NavHostController) {
                     navController.navigate(Screen.EditProfile.createRoute(userType, userId))
                 },
                 onNavigateToChangePassword = {
-                    navController.navigate(Screen.ChangePassword.route)
+                    navController.navigate(Screen.ChangePassword.createRoute(userType, userId))
                 }
             )
         }
@@ -125,8 +125,18 @@ fun NavGraph(navController: NavHostController) {
         }
 
         // ==================== 修改密码 ====================
-        composable(Screen.ChangePassword.route) {
+        composable(
+            route = Screen.ChangePassword.route,
+            arguments = listOf(
+                navArgument("userType") { type = NavType.IntType },
+                navArgument("userId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val userType = backStackEntry.arguments?.getInt("userType") ?: 0
+            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
             ChangePasswordScreen(
+                userType = userType,
+                userId = userId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

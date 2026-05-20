@@ -34,13 +34,13 @@ interface ApiService {
     @POST("mangRen/updataUser")
     suspend fun mangRenUpdateUser(@Body request: UpdateUserRequest): Response<ApiResponse<Boolean>>
 
-    /** 盲人修改密码 —— POST /mangRen/updataPassword，请求体传 {"password": "xxx"} */
+    /** 盲人修改密码 —— POST /mangRen/updataPassword，请求体传 {"id":1,"password":"xxx"} */
     @POST("mangRen/updataPassword")
-    suspend fun mangRenUpdatePassword(@Body body: Map<String, String>): Response<ApiResponse<Boolean>>
+    suspend fun mangRenUpdatePassword(@Body body: PasswordUpdateRequest): Response<ApiResponse<Boolean>>
 
     /** 盲人创建预约 —— POST /mangRen/createYuYue */
     @POST("mangRen/createYuYue")
-    suspend fun mangRenCreateYuYue(@Body request: CreateYuYueRequest): Response<ApiResponse<CreateYuYueData>>
+    suspend fun mangRenCreateYuYue(@Body request: CreateYuYueRequest): Response<ApiResponse<Int>>
 
     /** 盲人获取预约列表 —— GET /mangRen/getYuYue?id=xxx */
     @GET("mangRen/getYuYue")
@@ -74,6 +74,10 @@ interface ApiService {
     @GET("zhiYuan/getYuYue")
     suspend fun zhiYuanGetYuYue(@Query("id") userId: Int): Response<ApiResponse<List<YuYueItem>>>
 
+    /** 志愿者获取所有盲人预约请求 —— GET /zhiYuan/getAllYuYue */
+    @GET("zhiYuan/getAllYuYue")
+    suspend fun zhiYuanGetAllYuYue(): Response<ApiResponse<List<YuYueItem>>>
+
     /** 志愿者接单（确认预约）—— POST /zhiYuan/yuYue */
     @POST("zhiYuan/yuYue")
     suspend fun zhiYuanYuYue(@Body request: YuYueSelectRequest): Response<ApiResponse<Boolean>>
@@ -81,6 +85,14 @@ interface ApiService {
     /** 志愿者取消已接预约 —— GET /zhiYuan/delYuYue?yuYueId=xxx */
     @GET("zhiYuan/delYuYue")
     suspend fun zhiYuanDelYuYue(@Query("yuYueId") yuYueId: Int): Response<ApiResponse<Boolean>>
+
+    /** 志愿者修改个人信息 —— POST /zhiYuan/updataUser */
+    @POST("zhiYuan/updataZhiYuan")
+    suspend fun zhiYuanUpdateUser(@Body request: UpdateUserRequest): Response<ApiResponse<Boolean>>
+
+    /** 志愿者修改密码 —— POST /zhiYuan/updataPassword，请求体传 {"id":1,"password":"xxx"} */
+    @POST("zhiYuan/updataPassword")
+    suspend fun zhiYuanUpdatePassword(@Body body: PasswordUpdateRequest): Response<ApiResponse<Boolean>>
 
     // ============================================================
     // 通用接口 —— 路径前缀 /user

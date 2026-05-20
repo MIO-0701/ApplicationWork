@@ -20,7 +20,7 @@ class ReservationRepository {
             Log.d(TAG, "HTTP ${response.code()}, body=$body")
 
             if (response.isSuccessful && body?.code == 200) {
-                val yuYueId = body.data!!.yuYueId
+                val yuYueId = body.data ?: -1
                 if (yuYueId < 0) {
                     Log.e(TAG, "❌ 创建预约失败 —— yuYueId=$yuYueId (负数)")
                     Result.failure(Exception("创建预约失败 (yuYueId=$yuYueId)"))
@@ -72,6 +72,25 @@ class ReservationRepository {
             }
         } catch (e: Exception) {
             Log.e(TAG, "❌ 获取志愿者预约列表异常: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAllYuYue(): Result<List<YuYueItem>> {
+        Log.i(TAG, "志愿者获取所有盲人预约请求")
+        return try {
+            val response = api.zhiYuanGetAllYuYue()
+            val body = response.body()
+            if (response.isSuccessful && body?.code == 200) {
+                val list = body.data ?: emptyList()
+                Log.i(TAG, "✅ 获取所有预约成功 —— 共 ${list.size} 条")
+                Result.success(list)
+            } else {
+                Log.e(TAG, "❌ 获取所有预约失败 —— ${body?.message}")
+                Result.failure(Exception(body?.message ?: "获取预约列表失败"))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ 获取所有预约异常: ${e.message}", e)
             Result.failure(e)
         }
     }
