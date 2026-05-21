@@ -117,9 +117,7 @@ fun CreateReservationScreen(
                     .clickable { showDatePicker = true }
             ) {
                 OutlinedTextField(
-                    value = if (uiState.time.isNotBlank())
-                        formatDisplayTime(uiState.time)
-                    else "",
+                    value = uiState.selectedDateMillis?.let { formatMillis(it) } ?: "",
                     onValueChange = {},
                     enabled = false,
                     label = { Text("预约时间") },
@@ -158,14 +156,8 @@ fun CreateReservationScreen(
     }
 }
 
-/** 把 "yyyy-MM-dd HH:mm:ss" 格式化成更友好的展示文案 */
-private fun formatDisplayTime(backendTime: String): String {
-    return try {
-        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val displayer = SimpleDateFormat("yyyy年M月d日 HH:mm", Locale.getDefault())
-        val date = parser.parse(backendTime)
-        if (date != null) displayer.format(date) else backendTime
-    } catch (_: Exception) {
-        backendTime
-    }
+/** 把毫秒时间戳格式化成 "yyyy年M月d日 HH:mm" */
+private fun formatMillis(millis: Long): String {
+    val fmt = SimpleDateFormat("yyyy年M月d日 HH:mm", Locale.getDefault())
+    return fmt.format(Date(millis))
 }

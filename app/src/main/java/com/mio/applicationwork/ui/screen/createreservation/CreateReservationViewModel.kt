@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 data class CreateReservationUiState(
     val diDian: String = "",
@@ -36,27 +37,27 @@ class CreateReservationViewModel : ViewModel() {
     }
 
     fun updateDateTime(millis: Long) {
-        val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val formatted = fmt.format(Date(millis))
         _uiState.value = _uiState.value.copy(
             selectedDateMillis = millis,
-            time = formatted,
             errorMessage = null
         )
     }
 
     fun submit(userId: Int) {
         val state = _uiState.value
-        Log.i(TAG, "→ 提交预约 —— userId=$userId, 地点=${state.diDian}, 时间=${state.time}")
-
-        if (state.diDian.isBlank() || state.time.isBlank()) {
+        val dateMillis = state.selectedDateMillis
+        if (state.diDian.isBlank() || dateMillis == null) {
             _uiState.value = state.copy(errorMessage = "请填写地点和时间")
             return
         }
 
+        val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val timeStr = fmt.format(Date(dateMillis))
+        Log.i(TAG, "→ 提交预约 —— userId=$userId, 地点=${state.diDian}, 时间=$timeStr")
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            repository.createYuYue(userId, state.diDian, state.time).fold(
+            repository.createYuYue(userId, state.diDian, timeStr).fold(
                 onSuccess = { yuYueId ->
                     Log.i(TAG, "✅ 创建预约成功 —— yuYueId=$yuYueId")
                     _uiState.value = _uiState.value.copy(isLoading = false, success = true)

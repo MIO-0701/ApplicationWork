@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mio.applicationwork.data.model.YuYueItem
 import com.mio.applicationwork.data.repository.UserRepository
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,7 +156,7 @@ private fun ReservationCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text("时间", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(item.createTime ?: "未知", style = MaterialTheme.typography.bodyMedium)
+                Text(formatReservationTime(item.createTime), style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(modifier = Modifier.height(6.dp))
             Row(
@@ -195,7 +197,7 @@ private fun ReservationCard(
                     Text("${item.mangRenId}", style = MaterialTheme.typography.bodyMedium)
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                if (item.zhiYuanId == 0) {
+                if (item.zhiYuanId <= 0) {
                     Button(
                         onClick = onAccept,
                         enabled = !actionLoading,
@@ -217,5 +219,19 @@ private fun ReservationCard(
                 }
             }
         }
+    }
+}
+
+/** 将后端返回的 ISO 8601 UTC 时间转为本地时间展示 */
+private fun formatReservationTime(raw: String?): String {
+    if (raw.isNullOrBlank()) return "未知"
+    return try {
+        // ISO 8601: "2026-05-22T08:20:00.000+00:00"
+        val isoParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
+        val localDisplayer = SimpleDateFormat("yyyy年M月d日 HH:mm", Locale.getDefault())
+        val date = isoParser.parse(raw)
+        if (date != null) localDisplayer.format(date) else raw
+    } catch (_: Exception) {
+        raw
     }
 }
