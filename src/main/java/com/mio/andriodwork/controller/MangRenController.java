@@ -1,10 +1,7 @@
 package com.mio.andriodwork.controller;
 
 import com.mio.andriodwork.entity.MangRen;
-import com.mio.andriodwork.entity.request.LoginRequest;
-import com.mio.andriodwork.entity.request.MangRenUpdataRequest;
-import com.mio.andriodwork.entity.request.PasswordUpdata;
-import com.mio.andriodwork.entity.request.YuYueRequest;
+import com.mio.andriodwork.entity.request.*;
 import com.mio.andriodwork.entity.response.LoginResponse;
 import com.mio.andriodwork.entity.response.MangRenResponse;
 import com.mio.andriodwork.entity.response.YuYueResponse;
@@ -60,6 +57,11 @@ public class MangRenController {
     @RequestMapping("delYuYue")
     public Boolean delYuYue(@NonNull Integer yuYueId){
         return mangRenService.delYuYue(yuYueId);
+    }
+
+    @RequestMapping("pingFen")
+    public Boolean pingFen(@RequestBody PingFenRequest  request){
+        return mangRenService.pingFen(request);
     }
 
 

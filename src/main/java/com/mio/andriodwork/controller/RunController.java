@@ -19,4 +19,9 @@ public class RunController {
     public List<Run> getRun(@RequestBody RunRequest runRequest){
         return runService.getRun(runRequest);
     }
+
+    @RequestMapping("addRun")
+    public Boolean addRun(@RequestBody Run run){
+        return runService.addRun(run);
+    }
 }

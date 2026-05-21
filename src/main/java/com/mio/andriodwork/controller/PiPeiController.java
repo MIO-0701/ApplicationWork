@@ -4,6 +4,7 @@ import com.mio.andriodwork.entity.request.PiPeiRequest;
 import com.mio.andriodwork.entity.response.PiPeiResponse;
 import com.mio.andriodwork.service.PiPeiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +15,12 @@ public class PiPeiController  {
     PiPeiService piPeiService;
 
     @RequestMapping("/piPei")
-    public PiPeiResponse piPei(PiPeiRequest request){
+    public PiPeiResponse piPei(@RequestBody PiPeiRequest request){
         return piPeiService.piPei(request);
     }
 
     @RequestMapping("/delPiPei")
-    public Boolean delPiPei(PiPeiRequest request){
+    public Boolean delPiPei(@RequestBody PiPeiRequest request){
         return piPeiService.delPiPei(request);
     }
 }

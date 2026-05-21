@@ -27,4 +27,13 @@ public class RunService {
         }
         return null;
     }
+
+    public Boolean addRun(Run run) {
+        if (run != null){
+            log.info("添加运动信息：{}",run);
+            run.setIsDel(Config.NO_DELETE);
+            return runMapper.insert(run) > 0;
+        }
+        return null;
+    }
 }

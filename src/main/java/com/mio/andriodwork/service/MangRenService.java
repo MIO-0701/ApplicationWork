@@ -5,15 +5,14 @@ import com.mio.andriodwork.config.Config;
 import com.mio.andriodwork.entity.LoginException;
 import com.mio.andriodwork.entity.MangRen;
 import com.mio.andriodwork.entity.YuYue;
-import com.mio.andriodwork.entity.request.LoginRequest;
-import com.mio.andriodwork.entity.request.MangRenUpdataRequest;
-import com.mio.andriodwork.entity.request.PasswordUpdata;
-import com.mio.andriodwork.entity.request.YuYueRequest;
+import com.mio.andriodwork.entity.ZhiYuan;
+import com.mio.andriodwork.entity.request.*;
 import com.mio.andriodwork.entity.response.LoginResponse;
 import com.mio.andriodwork.entity.response.MangRenResponse;
 import com.mio.andriodwork.entity.response.YuYueResponse;
 import com.mio.andriodwork.mapper.MangRenMapper;
 import com.mio.andriodwork.mapper.YuYueMapper;
+import com.mio.andriodwork.mapper.ZhiYuanZheMapper;
 import com.mio.andriodwork.until.BeanUntil;
 import com.mio.andriodwork.until.JwtUntil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +29,8 @@ public class MangRenService {
     MangRenMapper mangRenMapper;
     @Autowired
     YuYueMapper yuYueMapper;
+    @Autowired
+    ZhiYuanZheMapper zhiYuanZheMapper;
 
     public MangRenResponse getMangRenById(int id) {// 通过盲人id获取盲人信息
         log.info("通过id获取用户信息：{}",id);
@@ -150,6 +151,25 @@ public class MangRenService {
         }
         yuYue.setIsDel(Config.DELETED);
         int update = yuYueMapper.update(yuYue, new LambdaQueryWrapper<>(YuYue.class).eq(YuYue::getId, yuYueId));
+        if(update>0){
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean pingFen(PingFenRequest request) {
+        if (request== null){
+            return false;
+        }
+        log.info("评价：{}",request);
+        ZhiYuan zhiYuan = zhiYuanZheMapper.selectOne(new LambdaQueryWrapper<>(ZhiYuan.class).eq(ZhiYuan::getId, request.getZhiYuanId()).eq(ZhiYuan::getIsDel, Config.NO_DELETE));
+        if (zhiYuan== null){
+            return false;
+        }
+        //取平均数
+        int pingFen = (zhiYuan.getPingFen()+request.getPingFen())/2;
+        zhiYuan.setPingFen(pingFen);
+        int update = zhiYuanZheMapper.updateById(zhiYuan);
         if(update>0){
             return true;
         }
