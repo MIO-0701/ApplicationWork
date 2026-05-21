@@ -27,7 +27,7 @@ sealed class Screen(val route: String) {
     data object ChangePassword : Screen("change_password/{userType}/{userId}") {
         fun createRoute(userType: Int, userId: Int) = "change_password/$userType/$userId"
     }
-    data object QuickHelp : Screen("quick_help/{userId}") {
-        fun createRoute(userId: Int) = "quick_help/$userId"
+    data object QuickHelp : Screen("quick_help/{userType}/{userId}") {
+        fun createRoute(userType: Int, userId: Int) = "quick_help/$userType/$userId"
     }
 }

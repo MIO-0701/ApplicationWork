@@ -7,10 +7,14 @@ import com.mio.applicationwork.data.repository.ReservationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class CreateReservationUiState(
     val diDian: String = "",
     val time: String = "",
+    val selectedDateMillis: Long? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val success: Boolean = false
@@ -29,6 +33,16 @@ class CreateReservationViewModel : ViewModel() {
 
     fun updateTime(value: String) {
         _uiState.value = _uiState.value.copy(time = value, errorMessage = null)
+    }
+
+    fun updateDateTime(millis: Long) {
+        val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val formatted = fmt.format(Date(millis))
+        _uiState.value = _uiState.value.copy(
+            selectedDateMillis = millis,
+            time = formatted,
+            errorMessage = null
+        )
     }
 
     fun submit(userId: Int) {

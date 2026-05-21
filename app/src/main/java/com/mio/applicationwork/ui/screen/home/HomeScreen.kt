@@ -74,6 +74,7 @@ fun HomeScreen(
                 FeatureItem(title = "评价志愿者", subtitle = "给陪跑志愿者打分", onClick = onNavigateToRateVolunteer)
             } else {
                 // ---- 志愿者功能入口 ----
+                FeatureItem(title = "一键接单", subtitle = "实时匹配附近的盲人跑友", onClick = onNavigateToQuickHelp)
                 FeatureItem(title = "查看预约列表", subtitle = "浏览盲人发出的预约请求", onClick = onNavigateToReservationList)
                 FeatureItem(title = "查看运动数据", subtitle = "跑步距离、配速、时长", onClick = onNavigateToRunData)
             }

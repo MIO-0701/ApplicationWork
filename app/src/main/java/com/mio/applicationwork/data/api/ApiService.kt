@@ -50,9 +50,9 @@ interface ApiService {
     @GET("mangRen/delYuYue")
     suspend fun mangRenDelYuYue(@Query("yuYueId") yuYueId: Int): Response<ApiResponse<Boolean>>
 
-    /** 盲人评价志愿者 —— POST /mangRen/pingJia */
-    @POST("mangRen/pingJia")
-    suspend fun mangRenPingJia(@Body request: PingJiaRequest): Response<ApiResponse<Boolean>>
+    /** 盲人评价志愿者 —— POST /mangRen/pingFen */
+    @POST("mangRen/pingFen")
+    suspend fun mangRenPingFen(@Body request: PingJiaRequest): Response<ApiResponse<Boolean>>
 
     // ============================================================
     // 志愿者端 API —— 路径前缀 /zhiYuan
@@ -95,10 +95,26 @@ interface ApiService {
     suspend fun zhiYuanUpdatePassword(@Body body: PasswordUpdateRequest): Response<ApiResponse<Boolean>>
 
     // ============================================================
+    // 匹配接口 —— 路径前缀 /piPei
+    // ============================================================
+
+    /** 发起匹配 —— POST /piPei/piPei */
+    @POST("piPei/piPei")
+    suspend fun piPei(@Body request: PiPeiRequest): Response<ApiResponse<PiPeiResponse>>
+
+    /** 取消匹配 —— POST /piPei/delPiPei */
+    @POST("piPei/delPiPei")
+    suspend fun delPiPei(@Body request: PiPeiRequest): Response<ApiResponse<Boolean>>
+
+    // ============================================================
     // 通用接口 —— 路径前缀 /user
     // ============================================================
 
     /** 获取跑步数据（盲人/志愿者通用）—— POST /user/getRun */
     @POST("user/getRun")
     suspend fun getRunData(@Body request: RunDataRequest): Response<ApiResponse<List<RunData>>>
+
+    /** 添加跑步数据 —— POST /user/addRun */
+    @POST("user/addRun")
+    suspend fun addRunData(@Body request: AddRunRequest): Response<ApiResponse<Boolean>>
 }

@@ -215,6 +215,26 @@ class UserRepository {
         }
     }
 
+    suspend fun addRunData(userType: Int, userId: Int, suDu: Int, shiChang: Int, juLi: Int): Result<Boolean> {
+        val typeName = if (userType == USER_TYPE_MANGREN) "盲人" else "志愿者"
+        Log.i(TAG, "添加跑步数据 —— 用户类型: $typeName, userId=$userId, suDu=$suDu, shiChang=$shiChang, juLi=$juLi")
+        return try {
+            val request = AddRunRequest(userType = userType, userId = userId, suDu = suDu, shiChang = shiChang, juLi = juLi)
+            val response = api.addRunData(request)
+            val body = response.body()
+            if (response.isSuccessful && body?.code == 200 && body?.data == true) {
+                Log.i(TAG, "✅ 添加跑步数据成功")
+                Result.success(true)
+            } else {
+                Log.e(TAG, "❌ 添加跑步数据失败 —— code=${body?.code}, message=${body?.message}")
+                Result.failure(Exception(body?.message ?: "添加跑步数据失败"))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ 添加跑步数据异常: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
     companion object {
         const val USER_TYPE_MANGREN = 0
         const val USER_TYPE_ZHIYUAN = 1

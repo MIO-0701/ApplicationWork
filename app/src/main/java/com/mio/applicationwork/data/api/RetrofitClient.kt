@@ -15,7 +15,7 @@ object RetrofitClient {
 
     private const val TAG = "RetrofitClient"
 
-    private const val BASE_URL = "http://10.62.174.190:8080/"
+    private const val BASE_URL = "http://36.151.146.231:8080/"
 
     private var token: String? = null
 

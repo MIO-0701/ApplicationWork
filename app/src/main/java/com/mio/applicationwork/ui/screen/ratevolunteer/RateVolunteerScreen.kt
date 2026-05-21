@@ -6,24 +6,30 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RateVolunteerScreen(
     userId: Int,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: RateVolunteerViewModel = viewModel()
 ) {
-    var volunteerId by remember { mutableStateOf("") }
-    var rating by remember { mutableFloatStateOf(3f) }
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.success) {
+        if (uiState.success) {
+            onNavigateBack()
+            viewModel.clearSuccess()
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("评价志愿者") },
-                navigationIcon = {
-                    TextButton(onClick = onNavigateBack) { Text("返回") }
-                }
+                navigationIcon = { TextButton(onClick = onNavigateBack) { Text("返回") } }
             )
         }
     ) { padding ->
@@ -35,27 +41,47 @@ fun RateVolunteerScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = volunteerId,
-                onValueChange = { volunteerId = it },
+                value = uiState.zhiYuanId,
+                onValueChange = { viewModel.updateZhiYuanId(it) },
                 label = { Text("志愿者ID") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("评分: ${rating.roundToInt()} 分")
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = "评分: ${uiState.pingFen.roundToInt()} 分",
+                style = MaterialTheme.typography.titleMedium
+            )
             Slider(
-                value = rating,
-                onValueChange = { rating = it },
+                value = uiState.pingFen,
+                onValueChange = { viewModel.updatePingFen(it) },
                 valueRange = 1f..5f,
                 steps = 3,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(20.dp))
+
+            uiState.errorMessage?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(it, color = MaterialTheme.colorScheme.error)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Button(
-                onClick = { /* TODO: 调用评价接口 */ },
+                onClick = { viewModel.submit() },
+                enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("提交评价")
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text("提交评价")
+                }
             }
         }
     }

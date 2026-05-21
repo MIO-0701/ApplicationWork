@@ -172,3 +172,50 @@ data class RunData(
     @SerializedName("shi_chang")
     val shiChang: Double    // 时长（分钟），保留2位小数
 )
+
+// ============================================================
+// 匹配（piPei）
+// ============================================================
+
+/** 匹配请求体 */
+data class PiPeiRequest(
+    val usertype: Int,   // 0=盲人, 1=志愿者
+    val userId: Int,
+    val diDian: String   // 地点
+)
+
+/** 匹配到的用户信息 */
+data class MatchUserInfo(
+    val id: Int? = null,
+    val name: String? = null,
+    val zhangHao: String? = null,
+    val password: String? = null,
+    val sex: Int? = null,
+    val suDu: Double? = null,
+    val gongLi: Double? = null,
+    val isDel: Int? = null,
+    val createTime: String? = null,
+    val updataTime: String? = null,
+    // 盲人专有字段
+    val zaiXian: String? = null,
+    val pingFen: Double? = null,
+    val isRenZhen: Int? = null
+)
+
+/** 匹配响应 */
+data class PiPeiResponse(
+    val userId: Int,
+    val usertype: Int,
+    val diDian: String,
+    val data: MatchUserInfo?  // null 表示未匹配成功
+)
+
+/** 添加跑步数据请求体 */
+data class AddRunRequest(
+    val id: Int = 0,
+    val userType: Int,   // 0=盲人, 1=志愿者
+    val userId: Int,
+    val suDu: Int,       // 跑步平均速度
+    val shiChang: Int,   // 此次跑步时长
+    val juLi: Int        // 此次跑步公里数
+)

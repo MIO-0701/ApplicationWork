@@ -110,6 +110,7 @@ fun ReservationListScreen(
                             ReservationCard(
                                 item = item,
                                 isMangRen = isMangRen,
+                                isMyReservations = !uiState.viewAll,
                                 currentUserId = userId,
                                 actionLoading = uiState.actionLoading,
                                 onCancelMangRen = { viewModel.cancelMangRen(item.yuYueID) },
@@ -131,6 +132,7 @@ fun ReservationListScreen(
 private fun ReservationCard(
     item: YuYueItem,
     isMangRen: Boolean,
+    isMyReservations: Boolean,
     currentUserId: Int,
     actionLoading: Boolean,
     onCancelMangRen: () -> Unit,
@@ -194,19 +196,24 @@ private fun ReservationCard(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 if (item.zhiYuanId == 0) {
-                    // Not yet accepted by anyone
                     Button(
                         onClick = onAccept,
                         enabled = !actionLoading,
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("接单") }
-                } else {
-                    // Accepted (by current volunteer)
+                } else if (isMyReservations) {
                     OutlinedButton(
                         onClick = onCancelZhiYuan,
                         enabled = !actionLoading,
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("取消接单") }
+                } else {
+                    Text(
+                        text = "已接单",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 }
             }
         }

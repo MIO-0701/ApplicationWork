@@ -79,7 +79,7 @@ fun NavGraph(navController: NavHostController) {
                     navController.navigate(Screen.RateVolunteer.createRoute(userId))
                 },
                 onNavigateToQuickHelp = {
-                    navController.navigate(Screen.QuickHelp.createRoute(userId))
+                    navController.navigate(Screen.QuickHelp.createRoute(userType, userId))
                 }
             )
         }
@@ -199,13 +199,18 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // ==================== 一键求助（盲人） ====================
+        // ==================== 一键求助 / 实时匹配 ====================
         composable(
             route = Screen.QuickHelp.route,
-            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+            arguments = listOf(
+                navArgument("userType") { type = NavType.IntType },
+                navArgument("userId") { type = NavType.IntType }
+            )
         ) { backStackEntry ->
+            val userType = backStackEntry.arguments?.getInt("userType") ?: 0
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
             QuickHelpScreen(
+                userType = userType,
                 userId = userId,
                 onNavigateBack = { navController.popBackStack() }
             )

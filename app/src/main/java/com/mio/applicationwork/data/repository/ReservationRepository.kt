@@ -154,7 +154,7 @@ class ReservationRepository {
         Log.i(TAG, "评价志愿者 —— zhiYuanId=$zhiYuanId, pingFen=$pingFen")
         return try {
             val request = PingJiaRequest(zhiYuanId, pingFen)
-            val response = api.mangRenPingJia(request)
+            val response = api.mangRenPingFen(request)
             val body = response.body()
             if (response.isSuccessful && body?.code == 200) {
                 Log.i(TAG, "✅ 评价成功")
