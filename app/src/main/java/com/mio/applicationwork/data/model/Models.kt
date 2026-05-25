@@ -1,7 +1,5 @@
 package com.mio.applicationwork.data.model
 
-import com.google.gson.annotations.SerializedName
-
 /**
  * 数据模型层 —— 所有与后端接口对应的请求/响应数据结构
  *
@@ -162,15 +160,11 @@ data class RunDataRequest(
     val userId: Int    // 用户ID
 )
 
-/** 单条跑步记录
- *  字段名与后端 JSON key 不一致，使用 @SerializedName 映射 */
+/** 单条跑步记录 */
 data class RunData(
-    @SerializedName("ju_li")
-    val juLi: Double,       // 距离（公里），后端保留2位小数
-    @SerializedName("su_du")
-    val suDu: Double,       // 配速（min/km），保留2位小数
-    @SerializedName("shi_chang")
-    val shiChang: Double    // 时长（分钟），保留2位小数
+    val juLi: Double,       // 距离（公里）
+    val suDu: Double,       // 配速（min/km）
+    val shiChang: Double    // 时长（分钟）
 )
 
 // ============================================================
