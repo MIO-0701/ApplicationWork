@@ -10,11 +10,14 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
+/**
+ * 创建预约 UI 状态
+ * @property selectedDateMillis DatePicker + TimePicker 组合后的毫秒时间戳
+ *         存储原始值而非格式化字符串，避免 UTC 往返转换导致时区偏移
+ */
 data class CreateReservationUiState(
     val diDian: String = "",
-    val time: String = "",
     val selectedDateMillis: Long? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -32,10 +35,11 @@ class CreateReservationViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(diDian = value, errorMessage = null)
     }
 
-    fun updateTime(value: String) {
-        _uiState.value = _uiState.value.copy(time = value, errorMessage = null)
-    }
-
+    /**
+     * 由 DatePicker + TimePicker 组合后调用
+     * @param millis Calendar.timeInMillis，包含日期+时间的完整时间戳
+     * 只存 millis 原始值，展示时用本地时区格式化，提交时才转字符串
+     */
     fun updateDateTime(millis: Long) {
         _uiState.value = _uiState.value.copy(
             selectedDateMillis = millis,
@@ -43,6 +47,12 @@ class CreateReservationViewModel : ViewModel() {
         )
     }
 
+    /**
+     * 提交预约
+     * 1. 校验地点非空 + 日期时间已选
+     * 2. 将 millis 格式化为 "yyyy-MM-dd HH:mm:ss" 发给后端
+     * 3. 成功后 success=true → LaunchedEffect 触发自动返回上一页
+     */
     fun submit(userId: Int) {
         val state = _uiState.value
         val dateMillis = state.selectedDateMillis

@@ -1,5 +1,6 @@
 package com.mio.applicationwork.ui.screen.login
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -30,17 +31,22 @@ import com.mio.applicationwork.data.repository.UserRepository
 @OptIn(ExperimentalMaterial3Api::class) // TopAppBar / FilterChip 等 Material3 实验性 API
 @Composable
 fun LoginScreen(
-    onLoginSuccess: (userType: Int, userId: Int) -> Unit, // 登录成功回调
-    onNavigateToRegister: () -> Unit,                     // 跳转注册页回调
-    viewModel: LoginViewModel = viewModel()              // ViewModel，支持预览时注入
+    onLoginSuccess: (userType: Int, userId: Int, userName: String) -> Unit,
+    onNavigateToRegister: () -> Unit,
+    viewModel: LoginViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // 监听登录成功状态，触发导航（LaunchedEffect 保证仅执行一次）
+    // 首次进入时检查是否已有有效会话（7天免登录）
+    LaunchedEffect(Unit) {
+        viewModel.checkAutoLogin()
+    }
+
+    // 监听登录成功状态，触发导航
     LaunchedEffect(uiState.loginSuccess) {
         uiState.loginSuccess?.let {
-            onLoginSuccess(it.userType, it.userId)
-            viewModel.clearLoginSuccess() // 清除状态，防止重复导航
+            onLoginSuccess(it.userType, it.userId, it.userName)
+            viewModel.clearLoginSuccess()
         }
     }
 
@@ -107,7 +113,25 @@ fun LoginScreen(
                 Text(text = it, color = MaterialTheme.colorScheme.error)
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // ---- 7天免登录复选框 ----
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = uiState.rememberSevenDays,
+                    onCheckedChange = { viewModel.updateRememberSevenDays(it) }
+                )
+                Text(
+                    text = "7天免登录",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.clickable { viewModel.updateRememberSevenDays(!uiState.rememberSevenDays) }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             // ---- 登录按钮（加载中时禁用并显示转圈） ----
             Button(

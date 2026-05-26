@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
+import com.mio.applicationwork.data.local.SessionManager
 import com.mio.applicationwork.ui.navigation.NavGraph
 import com.mio.applicationwork.ui.theme.ApplicationWorkTheme
 
@@ -23,7 +24,7 @@ import com.mio.applicationwork.ui.theme.ApplicationWorkTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 启用边到边显示（状态栏/导航栏透明叠加）
+        SessionManager.init(this)
         enableEdgeToEdge()
         setContent {
             // 应用主题（颜色/字体/形状等 Material3 配置定义在 ui/theme/ 下）

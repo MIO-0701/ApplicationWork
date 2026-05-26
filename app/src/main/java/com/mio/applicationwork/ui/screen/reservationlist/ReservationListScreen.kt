@@ -30,7 +30,7 @@ fun ReservationListScreen(
         viewModel.init(userType, userId)
     }
 
-    // Snackbar for action feedback
+    // Snackbar: 接单/取消等操作结果的轻提示
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState.actionMessage) {
         uiState.actionMessage?.let {
@@ -55,12 +55,11 @@ fun ReservationListScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            // Volunteer view toggle
+
+            // ── 志愿者端视图切换: 全部预约 ↔ 我的接单 ──
             if (!isMangRen) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     FilterChip(
@@ -79,31 +78,20 @@ fun ReservationListScreen(
 
             Box(modifier = Modifier.fillMaxSize()) {
                 when {
-                uiState.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                uiState.errorMessage != null -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Button(onClick = { viewModel.loadReservations() }) {
-                            Text("重试")
+                    uiState.isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    uiState.errorMessage != null -> {
+                        Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(onClick = { viewModel.loadReservations() }) { Text("重试") }
                         }
                     }
-                }
-                uiState.reservations.isEmpty() -> {
-                    Text(
-                        text = "暂无预约",
-                        modifier = Modifier.align(Alignment.Center),
+                    uiState.reservations.isEmpty() -> Text(
+                        text = "暂无预约", modifier = Modifier.align(Alignment.Center),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                }
-                else -> {
-                    LazyColumn(
+                    else -> LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -112,7 +100,7 @@ fun ReservationListScreen(
                             ReservationCard(
                                 item = item,
                                 isMangRen = isMangRen,
-                                isMyReservations = !uiState.viewAll,
+                                isMyReservations = !uiState.viewAll,   // "我的接单"模式下才能取消
                                 currentUserId = userId,
                                 actionLoading = uiState.actionLoading,
                                 onCancelMangRen = { viewModel.cancelMangRen(item.yuYueID) },
@@ -120,16 +108,18 @@ fun ReservationListScreen(
                                 onCancelZhiYuan = { viewModel.cancelZhiYuan(item.yuYueID) }
                             )
                         }
-                        // Bottom spacer for FAB clearance
                         item { Spacer(modifier = Modifier.height(8.dp)) }
                     }
                 }
             }
         }
-        }
     }
 }
 
+/**
+ * 单张预约卡片
+ * @param isMyReservations 志愿者"我的接单"模式下才展示取消按钮，防止跨用户取消
+ */
 @Composable
 private fun ReservationCard(
     item: YuYueItem,
@@ -143,37 +133,28 @@ private fun ReservationCard(
 ) {
     ElevatedCard(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            // 地点
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("地点", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(item.diDian, style = MaterialTheme.typography.bodyLarge)
             }
             Spacer(modifier = Modifier.height(6.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            // 时间 —— 后端返回 ISO 8601 UTC 格式，需转为本地时间展示
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("时间", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(formatReservationTime(item.createTime), style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(modifier = Modifier.height(6.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            // 配速 / 公里数
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("配速 / 公里数", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("${item.suDu} min/km  |  ${item.gongLi} km", style = MaterialTheme.typography.bodyMedium)
             }
 
             if (isMangRen) {
-                // Blind person: show volunteer ID if accepted
+                // ── 盲人端: 显示接单状态 + 取消按钮 ──
                 Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("志愿者", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(
                         text = if (item.zhiYuanId > 0) "已接单 (ID: ${item.zhiYuanId})" else "待接单",
@@ -181,38 +162,30 @@ private fun ReservationCard(
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                OutlinedButton(
-                    onClick = onCancelMangRen,
-                    enabled = !actionLoading,
-                    modifier = Modifier.fillMaxWidth()
-                ) { Text("取消预约") }
+                OutlinedButton(onClick = onCancelMangRen, enabled = !actionLoading, modifier = Modifier.fillMaxWidth()) {
+                    Text("取消预约")
+                }
             } else {
-                // Volunteer: show blind person ID, accept or cancel
+                // ── 志愿者端: 全部预约可接单，"我的接单"可取消 ──
                 Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("盲人ID", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text("${item.mangRenId}", style = MaterialTheme.typography.bodyMedium)
                 }
                 Spacer(modifier = Modifier.height(10.dp))
+                // zhiYuanId <= 0 表示未被接单（含 0 初始值和 -1 取消后的值）
                 if (item.zhiYuanId <= 0) {
-                    Button(
-                        onClick = onAccept,
-                        enabled = !actionLoading,
-                        modifier = Modifier.fillMaxWidth()
-                    ) { Text("接单") }
+                    Button(onClick = onAccept, enabled = !actionLoading, modifier = Modifier.fillMaxWidth()) {
+                        Text("接单")
+                    }
                 } else if (isMyReservations) {
-                    OutlinedButton(
-                        onClick = onCancelZhiYuan,
-                        enabled = !actionLoading,
-                        modifier = Modifier.fillMaxWidth()
-                    ) { Text("取消接单") }
+                    // 仅"我的接单"视图允许取消，全部预约中只显示"已接单"文字
+                    OutlinedButton(onClick = onCancelZhiYuan, enabled = !actionLoading, modifier = Modifier.fillMaxWidth()) {
+                        Text("取消接单")
+                    }
                 } else {
                     Text(
-                        text = "已接单",
-                        color = MaterialTheme.colorScheme.primary,
+                        text = "已接单", color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
@@ -222,11 +195,19 @@ private fun ReservationCard(
     }
 }
 
-/** 将后端返回的 ISO 8601 UTC 时间转为本地时间展示 */
+/**
+ * 将后端返回的 ISO 8601 UTC 时间转为本地时区展示
+ * 输入: "2026-05-22T08:20:00.000+00:00"
+ * 输出: "2026年5月22日 16:20"（UTC+8 本地时间）
+ *
+ * 使用 SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX") 完整匹配:
+ * - SSS  → 毫秒 (.000)
+ * - X    → RFC822 时区偏移 (+00:00)
+ * parse 时自动读取 +00:00 时区信息，format 时转为系统默认时区
+ */
 private fun formatReservationTime(raw: String?): String {
     if (raw.isNullOrBlank()) return "未知"
     return try {
-        // ISO 8601: "2026-05-22T08:20:00.000+00:00"
         val isoParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
         val localDisplayer = SimpleDateFormat("yyyy年M月d日 HH:mm", Locale.getDefault())
         val date = isoParser.parse(raw)

@@ -28,7 +28,7 @@ fun NavGraph(navController: NavHostController) {
         // ==================== 登录页 ====================
         composable(Screen.Login.route) {
             LoginScreen(
-                onLoginSuccess = { userType, userId ->
+                onLoginSuccess = { userType, userId, _ ->
                     navController.navigate(Screen.Home.createRoute(userType, userId)) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
