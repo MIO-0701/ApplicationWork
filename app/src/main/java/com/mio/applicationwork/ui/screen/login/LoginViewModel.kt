@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
  * 登录页 UI 状态
  * @property rememberSevenDays 用户是否勾选"7天免登录"复选框
  */
+//登录页 UI 状态 包含账号、密码、用户身份、是否勾选 7 天免登录、加载状态、错误信息和登录成功结果。
 data class LoginUiState(
     val zhangHao: String = "",
     val password: String = "",
